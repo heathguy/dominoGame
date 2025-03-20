@@ -26,6 +26,10 @@ class Domino {
     return found;
   }
   
+  flip() {
+    return new Domino(this.tileSize, this.rightSide, this.leftSide, upperX, upperY);
+  }
+  
   displayDom(x=this.upperXcoord,y=this.upperYcoord) {
     //let x = this.upperXcoord;
     //let y = this.upperYcoord;
