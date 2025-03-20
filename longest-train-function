@@ -1,0 +1,144 @@
+// Domino class (optional, for cleaner code)
+class Domino {
+  constructor(side1, side2) {
+    this.side1 = side1;
+    this.side2 = side2;
+  }
+
+  // Method to flip the domino
+  flip() {
+    return new Domino(this.side2, this.side1);
+  }
+}
+
+
+function findLongestDominoTrain(dominoes, startDouble = null) {
+  """
+  Finds the longest possible domino train from a set of dominoes, optionally starting with a double domino.
+
+  Args:
+      dominoes: An array of tuples (arrays), where each tuple represents a domino (e.g., [1, 2]).
+                Each side of the domino has a value.
+      startDouble: An optional tuple (array) representing the double domino to start with.
+                   If null, the function will try all dominoes as starting points.
+
+  Returns:
+      An array of tuples (arrays) representing the longest domino train found.
+      Returns an empty array if no train can be formed.
+  """
+
+  function findTrain(currentTrain, remainingDominoes) {
+    if (remainingDominoes.length === 0) {
+      return currentTrain;
+    }
+
+    const lastDomino = currentTrain.length > 0 ? currentTrain[currentTrain.length - 1] : null;
+    let longestTrain = currentTrain;
+
+    for (let i = 0; i < remainingDominoes.length; i++) {
+      const domino = remainingDominoes[i];
+
+      if (!lastDomino || lastDomino[1] === domino[0]) {
+        // Add the domino
+        const newRemaining = remainingDominoes.slice(0, i).concat(remainingDominoes.slice(i + 1)); // Efficiently remove domino
+        const newTrain = findTrain(currentTrain.concat([domino]), newRemaining);
+
+        if (newTrain.length > longestTrain.length) {
+          longestTrain = newTrain;
+        }
+      } else if (!lastDomino || lastDomino[1] === domino[1]) {
+        // Flip the domino
+        const flippedDomino = [domino[1], domino[0]];
+        const newRemaining = remainingDominoes.slice(0, i).concat(remainingDominoes.slice(i + 1)); // Efficiently remove domino
+        const newTrain = findTrain(currentTrain.concat([flippedDomino]), newRemaining);
+
+        if (newTrain.length > longestTrain.length) {
+          longestTrain = newTrain;
+        }
+      }
+    }
+
+    return longestTrain;
+  }
+
+
+  let longestPossibleTrain = [];
+
+  if (startDouble) {
+    const startDoubleIndex = dominoes.findIndex(d => d[0] === startDouble[0] && d[1] === startDouble[1]);
+
+    if (startDoubleIndex !== -1) {
+      const initialTrain = [startDouble];
+      const remainingDominoes = dominoes.slice(0, startDoubleIndex).concat(dominoes.slice(startDoubleIndex + 1));
+
+      longestPossibleTrain = findTrain(initialTrain, remainingDominoes);
+
+    } else {
+      console.warn("Warning: Start double not found in dominoes set.  Trying all dominoes.");
+      startDouble = null;
+    }
+  }
+
+  if (!startDouble) {
+    for (let i = 0; i < dominoes.length; i++) {
+      const startDomino = dominoes[i];
+      const initialTrain = [startDomino];
+      const remainingDominoes = dominoes.slice(0, i).concat(dominoes.slice(i + 1));
+
+      let train = findTrain(initialTrain, remainingDominoes);
+      if (train.length > longestPossibleTrain.length) {
+        longestPossibleTrain = train;
+      }
+
+      const flippedStartDomino = [startDomino[1], startDomino[0]];
+      const initialTrainFlipped = [flippedStartDomino];
+      train = findTrain(initialTrainFlipped, remainingDominoes);
+
+      if (train.length > longestPossibleTrain.length) {
+        longestPossibleTrain = train;
+      }
+    }
+  }
+  return longestPossibleTrain;
+}
+
+
+// p5.js setup and draw functions (example)
+let dominoes;
+let longestTrain;
+
+
+function setup() {
+  createCanvas(600, 400);
+  dominoes = [
+    [1, 2], [2, 3], [3, 4], [4, 5], [5, 6],
+    [10, 11], [11, 12], [12, 13], [13, 14], [14, 15],
+    [6, 7], [7, 8], [8, 9], [9, 10], [0, 1], [5, 5]
+  ];
+
+  //Example usage
+  longestTrain = findLongestDominoTrain(dominoes, [5, 5]); //with a start double
+  //longestTrain = findLongestDominoTrain(dominoes); //without
+  console.log("Longest Domino Train:", longestTrain);
+
+
+}
+
+function draw() {
+  background(220);
+
+  // Example: Visualize the domino train (very basic)
+  if (longestTrain) {
+    for (let i = 0; i < longestTrain.length; i++) {
+      let x = 50 + i * 40;
+      let domino = longestTrain[i];
+
+      //Draw the domino
+      rect(x, 50, 30, 20);
+      textAlign(CENTER, CENTER);
+      textSize(12);
+      text(domino[0], x + 8, 60);
+      text(domino[1], x + 22, 60);
+    }
+  }
+}
