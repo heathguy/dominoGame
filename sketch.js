@@ -7,7 +7,7 @@ let dominoSet;
 let handSet;
 
 function setup() {
-  createCanvas(630, 600);
+  createCanvas(710, 600);
   
   dominoSize = 20;
   handPicked = false;
@@ -15,7 +15,7 @@ function setup() {
   startingDouble = -1;
   doubleInput = createInput();
   
-  doubleButton = createButton('submit');
+  doubleButton = createButton('Submit');
   doubleButton.mousePressed(setStartingDouble);
 
   greeting = createElement('h2', 'Enter Starting Double');
@@ -29,8 +29,14 @@ function setup() {
   //console.log(dominoSet);
   
   //dom1 = new Domino(8,5);
-  dom1 = new Domino(dominoSize, startingDouble, 5);
-  dom2 = new Domino(dominoSize, 8, 7);
+  //dom1 = new Domino(dominoSize, startingDouble, 5);
+  //dom2 = new Domino(dominoSize, 8, 7);
+}
+
+function showBuildTrainButton() {
+  trainButton = createButton('Build Train');
+  trainButton.position(600, 550);
+  trainButton.mousePressed(findLongestTrain);
 }
 
 function buildDominoSet() {
@@ -87,6 +93,7 @@ function draw() {
     greeting.remove();
     displayAllDominoes(dominoSet);
     displayHandSet(handSet);
+    showBuildTrainButton()
   }
   else {
   }
@@ -95,11 +102,13 @@ function draw() {
 function mouseClicked() {
     console.log(mouseX, mouseY);
     let found = false;
-    for(let ad of dominoSet) {
-      if(ad.checkDominoMouse(mouseX, mouseY)) {
-        handSet.push(ad);
-        console.log(handSet);
-        break;
+    if(dominoSet) {
+      for(let ad of dominoSet) {
+        if(ad.checkDominoMouse(mouseX, mouseY)) {
+          handSet.push(ad);
+          console.log(handSet);
+          break;
+        }
       }
     }
   }
@@ -108,4 +117,9 @@ function setStartingDouble() {
   startingDouble = doubleInput.value();
   dominoSet = buildDominoSet();
   //dom1 = new Domino(dominoSize, startingDouble, 5);
+}
+
+function findLongestTrain(handSet) {
+  console.log("FIND LONGEST TRAIN");
+  
 }
