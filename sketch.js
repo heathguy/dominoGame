@@ -114,7 +114,7 @@ function mouseClicked() {
   }
 
 function setStartingDouble() {
-  startingDouble = doubleInput.value();
+  startingDouble = parseInt(doubleInput.value());
   dominoSet = buildDominoSet();
   //dom1 = new Domino(dominoSize, startingDouble, 5);
 }
