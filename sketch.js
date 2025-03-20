@@ -12,7 +12,7 @@ function setup() {
   dominoSize = 20;
   handPicked = false;
   
-  startingDouble = 12;
+  startingDouble = -1;
   doubleInput = createInput();
   
   doubleButton = createButton('submit');
@@ -24,7 +24,7 @@ function setup() {
   //textAlign(CENTER);
   textSize(50);
   
-  dominoSet = buildDominoSet();
+  //dominoSet = buildDominoSet();
   handSet = [];
   //console.log(dominoSet);
   
@@ -106,6 +106,6 @@ function mouseClicked() {
 
 function setStartingDouble() {
   startingDouble = doubleInput.value();
-  
-  dom1 = new Domino(dominoSize, startingDouble, 5);
+  dominoSet = buildDominoSet();
+  //dom1 = new Domino(dominoSize, startingDouble, 5);
 }
